@@ -15,7 +15,7 @@ getHeight()
 {
   int height, width;
   getmaxyx(stdscr, height, width);
-  return height;
+  return height - 2;
 }
 
 static int
@@ -33,7 +33,7 @@ showlines(LinesType::iterator start, LinesType::iterator end)
   LinesType::iterator it = start;
   getmaxyx(stdscr, height, width);
   erase();
-  for (int i = 0; i < height && it != end; ++i, ++it) {
+  for (int i = 0; i < (height - 2) && it != end; ++i, ++it) {
     mvwprintw(stdscr, i, 0, "%-*s", width, it->c_str());
   }
 }
@@ -191,6 +191,12 @@ main(int argc, char *argv[])
       showlines(it, lines.end());
       redraw = false;
     }
+    std::string status{argv[1]};
+    status += ":" + std::to_string(yFrame + yCursor) + ":"
+                  + std::to_string(xCursor) + ":";
+    attron(A_REVERSE);
+    mvprintw(getHeight(), 0, "%*s", getWidth(), status.c_str());
+    attroff(A_REVERSE);
     move(yCursor, xCursor);
     refresh();
   } while ((ch = getch()) != KEY_CTRL('C'));
