@@ -192,8 +192,8 @@ main(int argc, char *argv[])
       redraw = false;
     }
     std::string status{argv[1]};
-    status += ":" + std::to_string(yFrame + yCursor) + ":"
-                  + std::to_string(xCursor) + ":";
+    status += ":" + std::to_string(yFrame + yCursor + 1) + ":"
+                  + std::to_string(xCursor + 1) + ":";
     attron(A_REVERSE);
     mvprintw(getHeight(), 0, "%*s", getWidth(), status.c_str());
     attroff(A_REVERSE);
