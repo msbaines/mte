@@ -4,5 +4,5 @@ CXX = c++
 CXXFLAGS = -std=c++11
 LDFLAGS = -lcurses
 
-mte : Makefile
+mte : Makefile mte.cc
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o mte mte.cc
