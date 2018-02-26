@@ -92,6 +92,7 @@ main(int argc, char *argv[])
   LinesType::iterator cursorIt = it;
 
   bool redraw = true;
+  bool redrawLine = false;
 
   do {
     if (ch == KEY_DOWN) {
@@ -182,15 +183,17 @@ main(int argc, char *argv[])
     }
     if (std::isprint(ch)) {
       cursorIt->insert(xCursor++, 1, ch);
-      redraw = true;
+      redrawLine = true;
     }
     if (xCursor > cursorIt->size()) {
       xCursor = cursorIt->size();
     }
-    if (redraw) {
+    if (redrawLine) {
+      mvprintw(yCursor, 0, "%-*s", getWidth(), cursorIt->c_str());
+    } else if (redraw) {
       showlines(it, lines.end());
-      redraw = false;
     }
+    redraw = redrawLine = false;
     std::string status{argv[1]};
     status += ":" + std::to_string(yFrame + yCursor + 1) + ":"
                   + std::to_string(xCursor + 1) + ":";
