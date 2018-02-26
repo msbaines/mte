@@ -149,6 +149,10 @@ main(int argc, char *argv[])
 	redraw = true;
       }
     }
+    if (ch == KEY_CTRL('K')) {
+      cursorIt->erase(xCursor);
+      redraw = true;
+    }
     if (ch == KEY_CTRL('J')) {
       LinesType::iterator prev = cursorIt++;
       cursorIt = lines.emplace(cursorIt, prev->substr(xCursor));
