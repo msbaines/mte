@@ -27,6 +27,22 @@ getWidth()
 }
 
 static void
+scrollUp()
+{
+  scrollok(stdscr, true);
+  scrl(1);
+  scrollok(stdscr, false);
+}
+
+static void
+scrollDown()
+{
+  scrollok(stdscr, true);
+  scrl(-1);
+  scrollok(stdscr, false);
+}
+
+static void
 showlines(LinesType::iterator start, LinesType::iterator end)
 {
   int height, width;
@@ -100,9 +116,10 @@ main(int argc, char *argv[])
         continue;
       }
       if (yCursor == getHeight() - 1) {
-        redraw = true;
+        redrawLine = true;
         ++yFrame;
         ++it;
+        scrollUp();
       } else {
         ++yCursor;
       }
@@ -112,9 +129,10 @@ main(int argc, char *argv[])
       if (yFrame + yCursor == 0)
         continue;
       if (yCursor == 0) {
-        redraw = true;
+        redrawLine = true;
         --yFrame;
         --it;
+        scrollDown();
       } else {
         --yCursor;
       }
@@ -200,6 +218,7 @@ main(int argc, char *argv[])
     attron(A_REVERSE);
     mvprintw(getHeight(), 0, "%*s", getWidth(), status.c_str());
     attroff(A_REVERSE);
+    mvprintw(getHeight() + 1, 0, "%*s", getWidth(), "");
     move(yCursor, xCursor);
     refresh();
   } while ((ch = getch()) != KEY_CTRL('C'));
