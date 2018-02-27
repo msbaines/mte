@@ -111,7 +111,15 @@ main(int argc, char *argv[])
   bool redrawLine = false;
 
   do {
-    if (ch == KEY_DOWN) {
+    size_t prevXCursor = xCursor;
+    if (ch == KEY_RIGHT && xCursor != cursorIt->size()) {
+      ++xCursor;
+    }
+    if (ch == KEY_LEFT && xCursor != 0) {
+      --xCursor;
+    }
+    if ((ch == KEY_DOWN) ||
+        (ch == KEY_RIGHT && prevXCursor == cursorIt->size())) {
       if (yFrame + yCursor == lines.size() - 1) {
         continue;
       }
@@ -124,8 +132,12 @@ main(int argc, char *argv[])
         ++yCursor;
       }
       ++cursorIt;
+      if (ch == KEY_RIGHT) {
+        xCursor = 0;
+      }
     }
-    if (ch == KEY_UP) {
+    if ((ch == KEY_UP) ||
+        (ch == KEY_LEFT && prevXCursor == 0)) {
       if (yFrame + yCursor == 0)
         continue;
       if (yCursor == 0) {
@@ -137,16 +149,9 @@ main(int argc, char *argv[])
         --yCursor;
       }
       --cursorIt;
-    }
-    if (ch == KEY_RIGHT) {
-      if (xCursor == getWidth() - 1)
-        continue;
-      ++xCursor;
-    }
-    if (ch == KEY_LEFT) {
-      if (xCursor == 0)
-        continue;
-      --xCursor;
+      if (ch == KEY_LEFT) {
+        xCursor = cursorIt->size();
+      }
     }
     if (ch == KEY_CTRL('A')) {
       xCursor = 0;
