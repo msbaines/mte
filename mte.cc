@@ -97,37 +97,37 @@ main(int argc, char *argv[])
   do {
     if (ch == KEY_DOWN) {
       if (yFrame + yCursor == lines.size() - 1) {
-	continue;
+        continue;
       }
       if (yCursor == getHeight() - 1) {
-	redraw = true;
-	++yFrame;
-	++it;
+        redraw = true;
+        ++yFrame;
+        ++it;
       } else {
-	++yCursor;
+        ++yCursor;
       }
       ++cursorIt;
     }
     if (ch == KEY_UP) {
       if (yFrame + yCursor == 0)
-	continue;
+        continue;
       if (yCursor == 0) {
-	redraw = true;
-	--yFrame;
-	--it;
+        redraw = true;
+        --yFrame;
+        --it;
       } else {
-	--yCursor;
+        --yCursor;
       }
       --cursorIt;
     }
     if (ch == KEY_RIGHT) {
       if (xCursor == getWidth() - 1)
-	continue;
+        continue;
       ++xCursor;
     }
     if (ch == KEY_LEFT) {
       if (xCursor == 0)
-	continue;
+        continue;
       --xCursor;
     }
     if (ch == KEY_CTRL('A')) {
@@ -137,17 +137,17 @@ main(int argc, char *argv[])
       xCursor = getWidth();
     }
     if (ch == KEY_BACKSPACE ||
-	ch == KEY_CTRL('?')) {
+        ch == KEY_CTRL('?')) {
       if (xCursor > 0) {
-	cursorIt->erase(--xCursor, 1);
-	redraw = true;
+        cursorIt->erase(--xCursor, 1);
+        redraw = true;
       } else if (yCursor > 0){
-	LinesType::iterator prev = cursorIt--;
-	xCursor = cursorIt->size();
-	(*cursorIt) += *prev;
-	lines.erase(prev);
-	--yCursor;
-	redraw = true;
+        LinesType::iterator prev = cursorIt--;
+        xCursor = cursorIt->size();
+        (*cursorIt) += *prev;
+        lines.erase(prev);
+        --yCursor;
+        redraw = true;
       }
     }
     if (ch == KEY_CTRL('K')) {
@@ -160,10 +160,10 @@ main(int argc, char *argv[])
       prev->erase(xCursor);
       xCursor = 0;
       if (yCursor < getHeight() - 1) {
-	++yCursor;
+        ++yCursor;
       } else {
-	++it;
-	++yFrame;
+        ++it;
+        ++yFrame;
       }
       redraw = true;
     }
@@ -173,10 +173,10 @@ main(int argc, char *argv[])
       std::ofstream tmpfile(tmpname);
       LinesType::iterator last = --lines.end();
       for (LinesType::iterator line = lines.begin(); line != last; ++line) {
-	tmpfile << *line << std::endl;
+        tmpfile << *line << std::endl;
       }
       if (last->size() > 0) {
-	tmpfile << *last;
+        tmpfile << *last;
       }
       tmpfile.close();
       rename(tmpname.c_str(), argv[1]);
