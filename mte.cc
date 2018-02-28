@@ -111,6 +111,7 @@ main(int argc, char *argv[])
   bool redrawLine = false;
 
   do {
+    std::string command;
     size_t prevXCursor = xCursor;
     if (ch == KEY_RIGHT && xCursor != cursorIt->size()) {
       ++xCursor;
@@ -211,6 +212,7 @@ main(int argc, char *argv[])
       }
       tmpfile.close();
       rename(tmpname.c_str(), argv[1]);
+      command = "Saved.";
     }
     if (std::isprint(ch)) {
       cursorIt->insert(xCursor++, 1, ch);
@@ -231,7 +233,7 @@ main(int argc, char *argv[])
     attron(A_REVERSE);
     mvprintw(getHeight(), 0, "%*s", getWidth(), status.c_str());
     attroff(A_REVERSE);
-    mvprintw(getHeight() + 1, 0, "%*s", getWidth(), "");
+    mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
     move(yCursor, xCursor);
     refresh();
   } while ((ch = getch()) != KEY_CTRL('C'));
