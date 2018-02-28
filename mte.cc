@@ -188,9 +188,11 @@ main(int argc, char *argv[])
     }
     if (ch == KEY_CTRL('J')) {
       LinesType::iterator prev = cursorIt++;
-      cursorIt = lines.emplace(cursorIt, prev->substr(xCursor));
+      size_t pos = prev->find_first_not_of(" \t");
+      cursorIt = lines.emplace(cursorIt,
+                               prev->substr(0, pos) + prev->substr(xCursor));
       prev->erase(xCursor);
-      xCursor = 0;
+      xCursor = pos;
       if (yCursor < getHeight() - 1) {
         ++yCursor;
       } else {
