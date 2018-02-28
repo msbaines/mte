@@ -174,7 +174,15 @@ main(int argc, char *argv[])
       }
     }
     if (ch == KEY_CTRL('K')) {
-      cursorIt->erase(xCursor);
+      if (cursorIt->size() != xCursor) {
+        cursorIt->erase(xCursor);
+      } else {
+        LinesType::iterator next = cursorIt;
+        if (++next != lines.end()) {
+          (*cursorIt) += *next;
+          lines.erase(next);
+        }
+      }
       redraw = true;
     }
     if (ch == KEY_CTRL('J')) {
