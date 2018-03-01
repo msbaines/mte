@@ -77,8 +77,8 @@ main(int argc, char *argv[])
 
   int ch = 0;
   size_t yFrame = 0;
-  size_t yCursor = 0;
-  size_t xCursor = 0;
+  int yCursor = 0;
+  int xCursor = 0;
 
   LinesType lines;
   std::string line;
@@ -112,47 +112,41 @@ main(int argc, char *argv[])
 
   do {
     std::string command;
-    size_t prevXCursor = xCursor;
-    if (ch == KEY_RIGHT && xCursor != cursorIt->size()) {
-      ++xCursor;
-    }
-    if (ch == KEY_LEFT && xCursor != 0) {
-      --xCursor;
-    }
-    if ((ch == KEY_DOWN) ||
-        (ch == KEY_RIGHT && prevXCursor == cursorIt->size())) {
-      if (yFrame + yCursor == lines.size() - 1) {
-        continue;
-      }
-      if (yCursor == getHeight() - 1) {
-        redrawLine = true;
-        ++yFrame;
-        ++it;
-        scrollUp();
+    if (ch == KEY_RIGHT) {
+      if (xCursor != cursorIt->size()) {
+        ++xCursor;
       } else {
+        auto next = cursorIt;
+        if (++next == lines.end())
+          continue;
+        xCursor = 0;
+        cursorIt = next;
         ++yCursor;
       }
-      ++cursorIt;
-      if (ch == KEY_RIGHT) {
-        xCursor = 0;
-      }
     }
-    if ((ch == KEY_UP) ||
-        (ch == KEY_LEFT && prevXCursor == 0)) {
-      if (yFrame + yCursor == 0)
-        continue;
-      if (yCursor == 0) {
-        redrawLine = true;
-        --yFrame;
-        --it;
-        scrollDown();
+    if (ch == KEY_LEFT) {
+      if (xCursor != 0) {
+        --xCursor;
       } else {
+        if (cursorIt == lines.begin())
+          continue;
+        --cursorIt;
+        xCursor = cursorIt->size();
         --yCursor;
       }
+    }
+    if (ch == KEY_DOWN) {
+      auto next = cursorIt;
+      if (++next == lines.end())
+        continue;
+      cursorIt = next;
+      ++yCursor;
+    }
+    if (ch == KEY_UP) {
+      if (cursorIt == lines.begin())
+        continue;
       --cursorIt;
-      if (ch == KEY_LEFT) {
-        xCursor = cursorIt->size();
-      }
+      --yCursor;
     }
     if (ch == KEY_CTRL('A')) {
       xCursor = 0;
@@ -222,6 +216,19 @@ main(int argc, char *argv[])
     }
     if (xCursor > cursorIt->size()) {
       xCursor = cursorIt->size();
+    }
+    if (yCursor == getHeight()) {
+      scrollUp();
+      --yCursor;
+      ++yFrame;
+      ++it;
+      redrawLine = true;
+    } else if (yCursor == -1) {
+      scrollDown();
+      ++yCursor;
+      --yFrame;
+      --it;
+      redrawLine = true;
     }
     if (redrawLine) {
       mvprintw(yCursor, 0, "%-*s", getWidth(), cursorIt->c_str());
