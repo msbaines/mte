@@ -93,13 +93,7 @@ main(int argc, char *argv[])
     lines.emplace_back();
   }
 
-  FILE *in = fopen("/dev/tty", "r");
-  if (in == NULL) {
-    perror("fopen(/dev/tty)");
-    exit(EXIT_FAILURE);
-  }
-
-  newterm(NULL, stdout, in);
+  initscr();
   atexit(cleanup);
   keypad(stdscr, true);
   noecho();
