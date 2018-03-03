@@ -10,7 +10,7 @@
 
 namespace {
 
-typedef std::list<std::string> LinesType;
+typedef std::list<std::string> Lines;
 
 int
 getHeight()
@@ -45,7 +45,7 @@ scrollDown()
 }
 
 void
-showlines(LinesType::iterator start, LinesType::iterator end)
+showlines(Lines::iterator start, Lines::iterator end)
 {
   int height, width;
   auto it = start;
@@ -84,7 +84,7 @@ main(int argc, char *argv[])
   int yCursor = 0;
   int xCursor = 0;
 
-  LinesType lines;
+  Lines lines;
   std::string line;
   bool addNL = true;
   while (getline(fin, line)) {
