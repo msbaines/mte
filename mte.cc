@@ -107,9 +107,37 @@ main(int argc, char *argv[])
 
   bool redraw = true;
   bool redrawLine = false;
+  bool commandMode = false;
+  size_t commandXCursor = 0;
+  std::string command;
 
   do {
-    std::string command;
+    std::string notification;
+
+    if (commandMode) {
+      if (std::isprint(ch)) {
+        command.insert(commandXCursor++, 1, ch);
+        mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
+        move(getHeight() + 1, commandXCursor);
+	refresh();
+	continue;
+      } else if (ch == KEY_CTRL('J')) {
+        notification = "Command failed!";
+      }
+      ch = 0;
+      commandMode = false;
+      command.erase();
+    }
+
+    if (ch == KEY_CTRL('I')) {
+      commandMode = true;
+      commandXCursor = 0;
+      mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), "");
+      move(getHeight() + 1, 0);
+      refresh();
+      continue;
+    }
+
     if (ch == KEY_RIGHT) {
       if (xCursor != cursorIt->size()) {
         ++xCursor;
@@ -212,7 +240,7 @@ main(int argc, char *argv[])
       }
       tmpfile.close();
       rename(tmpname.c_str(), argv[1]);
-      command = "Saved.";
+      notification = "Saved.";
     }
     if (std::isprint(ch)) {
       cursorIt->insert(xCursor++, 1, ch);
@@ -246,7 +274,7 @@ main(int argc, char *argv[])
     attron(A_REVERSE);
     mvprintw(getHeight(), 0, "%*s", getWidth(), status.c_str());
     attroff(A_REVERSE);
-    mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
+    mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), notification.c_str());
     move(yCursor, xCursor);
     refresh();
   } while ((ch = getch()) != KEY_CTRL('C'));
