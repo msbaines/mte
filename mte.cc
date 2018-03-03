@@ -156,7 +156,7 @@ main(int argc, char *argv[])
         ch == KEY_CTRL('?')) {
       if (xCursor > 0) {
         cursorIt->erase(--xCursor, 1);
-        redraw = true;
+        redrawLine = true;
       } else if (cursorIt != lines.begin()){
         auto prev = cursorIt--;
         xCursor = cursorIt->size();
