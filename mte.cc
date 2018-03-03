@@ -46,7 +46,7 @@ static void
 showlines(LinesType::iterator start, LinesType::iterator end)
 {
   int height, width;
-  LinesType::iterator it = start;
+  auto it = start;
   getmaxyx(stdscr, height, width);
   erase();
   for (int i = 0; i < (height - 2) && it != end; ++i, ++it) {
@@ -104,8 +104,8 @@ main(int argc, char *argv[])
   keypad(stdscr, true);
   noecho();
 
-  LinesType::iterator it = lines.begin();
-  LinesType::iterator cursorIt = it;
+  auto it = lines.begin();
+  auto cursorIt = it;
 
   bool redraw = true;
   bool redrawLine = false;
@@ -160,7 +160,7 @@ main(int argc, char *argv[])
         cursorIt->erase(--xCursor, 1);
         redraw = true;
       } else if (cursorIt != lines.begin()){
-        LinesType::iterator prev = cursorIt--;
+        auto prev = cursorIt--;
         xCursor = cursorIt->size();
         (*cursorIt) += *prev;
         lines.erase(prev);
@@ -178,7 +178,7 @@ main(int argc, char *argv[])
       if (cursorIt->size() != xCursor) {
         cursorIt->erase(xCursor);
       } else {
-        LinesType::iterator next = cursorIt;
+        auto next = cursorIt;
         if (++next != lines.end()) {
           (*cursorIt) += *next;
           lines.erase(next);
@@ -187,7 +187,7 @@ main(int argc, char *argv[])
       redraw = true;
     }
     if (ch == KEY_CTRL('J')) {
-      LinesType::iterator prev = cursorIt++;
+      auto prev = cursorIt++;
       size_t pos = prev->find_first_not_of(" \t");
       cursorIt = lines.emplace(cursorIt,
                                prev->substr(0, pos) + prev->substr(xCursor));
@@ -205,8 +205,8 @@ main(int argc, char *argv[])
       std::string tmpname{argv[1]};
       tmpname += "~";
       std::ofstream tmpfile(tmpname);
-      LinesType::iterator last = --lines.end();
-      for (LinesType::iterator line = lines.begin(); line != last; ++line) {
+      auto last = --lines.end();
+      for (auto line = lines.begin(); line != last; ++line) {
         tmpfile << *line << std::endl;
       }
       if (last->size() > 0) {
