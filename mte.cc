@@ -8,9 +8,11 @@
 
 #define KEY_CTRL(ch) (ch ^ 0x40)
 
+namespace {
+
 typedef std::list<std::string> LinesType;
 
-static int
+int
 getHeight()
 {
   int height, width;
@@ -18,7 +20,7 @@ getHeight()
   return height - 2;
 }
 
-static int
+int
 getWidth()
 {
   int height, width;
@@ -26,7 +28,7 @@ getWidth()
   return width;
 }
 
-static void
+void
 scrollUp()
 {
   scrollok(stdscr, true);
@@ -34,7 +36,7 @@ scrollUp()
   scrollok(stdscr, false);
 }
 
-static void
+void
 scrollDown()
 {
   scrollok(stdscr, true);
@@ -42,7 +44,7 @@ scrollDown()
   scrollok(stdscr, false);
 }
 
-static void
+void
 showlines(LinesType::iterator start, LinesType::iterator end)
 {
   int height, width;
@@ -54,12 +56,14 @@ showlines(LinesType::iterator start, LinesType::iterator end)
   }
 }
 
-static void
+void
 cleanup()
 {
   delwin(stdscr);
   endwin();
 }
+
+} // namespace
 
 int
 main(int argc, char *argv[])
