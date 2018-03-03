@@ -159,13 +159,19 @@ main(int argc, char *argv[])
       if (xCursor > 0) {
         cursorIt->erase(--xCursor, 1);
         redraw = true;
-      } else if (yCursor > 0){
+      } else if (cursorIt != lines.begin()){
         LinesType::iterator prev = cursorIt--;
         xCursor = cursorIt->size();
         (*cursorIt) += *prev;
         lines.erase(prev);
-        --yCursor;
-        redraw = true;
+        if (yCursor == 0) {
+          --yFrame;
+          it = cursorIt;
+          redrawLine = true;
+        } else {
+          --yCursor;
+          redraw = true;
+        }
       }
     }
     if (ch == KEY_CTRL('K')) {
