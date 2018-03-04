@@ -56,6 +56,23 @@ showlines(Lines::iterator start, Lines::iterator end)
   }
 }
 
+Lines::iterator
+find(std::string str,  Lines::iterator start, Lines::iterator end,
+     int &x, int &y)
+{
+  int nx = x + 1;
+  int ny = y;
+  for (auto line = start; line != end; ++line, ++ny) {
+    if ((nx = line->find(str, nx)) != std::string::npos) {
+      x = nx;
+      y = ny;
+      return line;
+    }
+    nx = 0;
+  }
+  return end;
+}
+
 void
 cleanup()
 {
@@ -119,10 +136,26 @@ main(int argc, char *argv[])
         command.insert(commandXCursor++, 1, ch);
         mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
         move(getHeight() + 1, commandXCursor);
-	refresh();
-	continue;
+        refresh();
+        continue;
       } else if (ch == KEY_CTRL('J')) {
-        notification = "Command failed!";
+        if (command[0] == '/') {
+          auto result = find(command.substr(1), cursorIt, lines.end(),
+                             xCursor, yCursor);
+          if (result != lines.end()) {
+            cursorIt = result;
+            while (yCursor >= getHeight()) {
+              --yCursor;
+              ++yFrame;
+              ++it;
+            }
+            redraw = true;
+          } else {
+            notification = "Not found!";
+          }
+        } else {
+          notification = "Unknown command!";
+        }
       }
       ch = 0;
       commandMode = false;
