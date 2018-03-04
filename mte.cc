@@ -73,6 +73,31 @@ find(std::string str,  Lines::iterator start, Lines::iterator end,
   return end;
 }
 
+std::string
+getCommand()
+{
+  std::string command;
+  size_t cursor = 0;
+
+  while (true) {
+    mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
+    move(getHeight() + 1, cursor);
+    refresh();
+
+    int ch = getch();
+
+    if (std::isprint(ch)) {
+      command.insert(cursor++, 1, ch);
+    } else if (ch == KEY_CTRL('J')) {
+      return command;
+    } else {
+      return "";
+    }
+  }
+
+  return command;
+}
+
 void
 cleanup()
 {
@@ -124,51 +149,31 @@ main(int argc, char *argv[])
 
   bool redraw = true;
   bool redrawLine = false;
-  bool commandMode = false;
-  size_t commandXCursor = 0;
-  std::string command;
 
   do {
     std::string notification;
 
-    if (commandMode) {
-      if (std::isprint(ch)) {
-        command.insert(commandXCursor++, 1, ch);
-        mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
-        move(getHeight() + 1, commandXCursor);
-        refresh();
-        continue;
-      } else if (ch == KEY_CTRL('J')) {
-        if (command[0] == '/') {
-          auto result = find(command.substr(1), cursorIt, lines.end(),
-                             xCursor, yCursor);
-          if (result != lines.end()) {
-            cursorIt = result;
-            while (yCursor >= getHeight()) {
-              --yCursor;
-              ++yFrame;
-              ++it;
-            }
-            redraw = true;
-          } else {
-            notification = "Not found!";
-          }
-        } else {
-          notification = "Unknown command!";
-        }
-      }
-      ch = 0;
-      commandMode = false;
-      command.erase();
-    }
-
     if (ch == KEY_CTRL('I')) {
-      commandMode = true;
-      commandXCursor = 0;
-      mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), "");
-      move(getHeight() + 1, 0);
-      refresh();
-      continue;
+      std::string command = getCommand();
+      if (command.size() == 0) {
+        ;
+      } else if (command[0] == '/') {
+        auto result = find(command.substr(1), cursorIt, lines.end(),
+                           xCursor, yCursor);
+        if (result != lines.end()) {
+          cursorIt = result;
+          while (yCursor >= getHeight()) {
+            --yCursor;
+            ++yFrame;
+            ++it;
+          }
+          redraw = true;
+        } else {
+          notification = "Not found!";
+        }
+      } else {
+        notification = "Unknown command!";
+      }
     }
 
     if (ch == KEY_RIGHT) {
