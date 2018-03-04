@@ -76,8 +76,8 @@ find(std::string str,  Lines::iterator start, Lines::iterator end,
 std::string
 getCommand()
 {
-  std::string command;
-  size_t cursor = 0;
+  static std::string command;
+  static size_t cursor = 0;
 
   while (true) {
     mvprintw(getHeight() + 1, 0, "%-*s", getWidth(), command.c_str());
@@ -107,6 +107,7 @@ getCommand()
         command.erase(--cursor, 1);
       }
     } else if (ch == KEY_CTRL('J')) {
+      cursor = 0;
       return command;
     } else {
       return "";
