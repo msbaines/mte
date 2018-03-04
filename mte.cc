@@ -73,6 +73,31 @@ find(std::string str,  Lines::iterator start, Lines::iterator end,
   return end;
 }
 
+Lines::reverse_iterator
+rfind(std::string str,  Lines::reverse_iterator start,
+      Lines::reverse_iterator end, int &x, int &y)
+{
+  std::string::size_type nx;
+  int ny = y;
+  auto line = start;
+  if (x == 0) {
+    nx = std::string::npos;
+    ++line;
+    --ny;
+  } else {
+    nx = x - 1;
+  }
+  for ( ; line != end; ++line, --ny) {
+    if ((nx = line->rfind(str, nx)) != std::string::npos) {
+      x = nx;
+      y = ny;
+      return line;
+    }
+    nx = std::string::npos;
+  }
+  return end;
+}
+
 std::string
 getCommand()
 {
@@ -185,6 +210,21 @@ main(int argc, char *argv[])
             --yCursor;
             ++yFrame;
             ++it;
+          }
+          redraw = true;
+        } else {
+          notification = "Not found!";
+        }
+      } else if (command[0] == '?') {
+        auto result = rfind(command.substr(1),
+                            --Lines::reverse_iterator(cursorIt),
+                            lines.rend(), xCursor, yCursor);
+        if (result != lines.rend()) {
+          cursorIt = --result.base();
+          while (yCursor < 0) {
+            ++yCursor;
+            --yFrame;
+            --it;
           }
           redraw = true;
         } else {
