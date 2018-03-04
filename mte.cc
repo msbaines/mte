@@ -190,6 +190,22 @@ main(int argc, char *argv[])
         } else {
           notification = "Not found!";
         }
+      } else if (command[0] == '^') {
+        it = cursorIt = lines.begin();
+        xCursor = yCursor = yFrame = 0;
+        redraw = true;
+      } else if (command[0] == '$') {
+        cursorIt = lines.end();
+        it = --cursorIt;
+        xCursor = cursorIt->size();
+        yCursor = 0;
+        yFrame = lines.size() - 1;
+        while (yCursor < getHeight() - 1 && it != lines.begin()) {
+          ++yCursor;
+          --yFrame;
+          --it;
+        }
+        redraw = true;
       } else {
         notification = "Unknown command!";
       }
