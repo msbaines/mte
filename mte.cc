@@ -88,6 +88,24 @@ getCommand()
 
     if (std::isprint(ch)) {
       command.insert(cursor++, 1, ch);
+    } else if (ch == KEY_CTRL('A')) {
+      cursor = 0;
+    } else if (ch == KEY_CTRL('E')) {
+      cursor = command.size();
+    } else if (ch == KEY_CTRL('K')) {
+      command.erase(cursor);
+    } else if (ch == KEY_RIGHT) {
+      if (cursor != command.size()) {
+        ++cursor;
+      }
+    } else if (ch == KEY_LEFT) {
+      if (cursor != 0) {
+        --cursor;
+      }
+    } else if (ch == KEY_BACKSPACE || ch == KEY_CTRL('?')) {
+      if (cursor != 0) {
+        command.erase(--cursor, 1);
+      }
     } else if (ch == KEY_CTRL('J')) {
       return command;
     } else {
@@ -218,8 +236,7 @@ main(int argc, char *argv[])
     if (ch == KEY_CTRL('E')) {
       xCursor = getWidth();
     }
-    if (ch == KEY_BACKSPACE ||
-        ch == KEY_CTRL('?')) {
+    if (ch == KEY_BACKSPACE || ch == KEY_CTRL('?')) {
       if (xCursor > 0) {
         cursorIt->erase(--xCursor, 1);
         redrawLine = true;
