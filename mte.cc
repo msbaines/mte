@@ -230,6 +230,20 @@ main(int argc, char *argv[])
         } else {
           notification = "Not found!";
         }
+      } else if (command[0] == ':') {
+        int lineno = std::atoi(&(command.c_str()[1]));
+        if (lineno < 1 || lineno > lines.size()) {
+          notification = "Invalid line number!";
+        } else {
+          it = cursorIt = lines.begin();
+          xCursor = yCursor = yFrame = 0;
+          while (yFrame < lineno) {
+            ++yFrame;
+            ++it;
+          }
+          cursorIt = it;
+          redraw = true;
+        }
       } else if (command[0] == '^') {
         it = cursorIt = lines.begin();
         xCursor = yCursor = yFrame = 0;
