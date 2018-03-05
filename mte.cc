@@ -188,6 +188,7 @@ main(int argc, char *argv[])
   keypad(stdscr, true);
   noecho();
 
+  std::string clipboard;
   auto it = lines.begin();
   auto cursorIt = it;
 
@@ -328,6 +329,7 @@ main(int argc, char *argv[])
     }
     if (ch == KEY_CTRL('K')) {
       if (cursorIt->size() != xCursor) {
+        clipboard = cursorIt->substr(xCursor);
         cursorIt->erase(xCursor);
       } else {
         auto next = cursorIt;
@@ -367,6 +369,10 @@ main(int argc, char *argv[])
       tmpfile.close();
       rename(tmpname.c_str(), argv[1]);
       notification = "Saved.";
+    }
+    if (ch == KEY_CTRL('U')) {
+      cursorIt->insert(xCursor, clipboard);
+      redrawLine = true;
     }
     if (std::isprint(ch)) {
       cursorIt->insert(xCursor++, 1, ch);
