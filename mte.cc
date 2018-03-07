@@ -340,6 +340,11 @@ main(int argc, char *argv[])
       }
       redraw = true;
     }
+    if (ch == KEY_CTRL('W')) {
+      if (cursorIt->size() != xCursor) {
+        clipboard = cursorIt->substr(xCursor);
+      }
+    }
     if (ch == KEY_CTRL('J')) {
       auto prev = cursorIt++;
       size_t pos = prev->find_first_not_of(" \t");
